@@ -8,6 +8,7 @@ type SectionHeadingProps = {
   description?: string;
   className?: string;
   align?: "left" | "center";
+  onDark?: boolean;
 };
 
 export function SectionHeading({
@@ -17,6 +18,7 @@ export function SectionHeading({
   description,
   className,
   align = "left",
+  onDark = false,
 }: SectionHeadingProps) {
   return (
     <div
@@ -27,11 +29,22 @@ export function SectionHeading({
       )}
     >
       <Eyebrow>{eyebrow}</Eyebrow>
-      <h2 id={id} className="mt-4 font-display text-h2 text-navy">
+      <h2
+        id={id}
+        className={cn(
+          "mt-4 font-display text-h2",
+          onDark ? "text-paper" : "text-navy",
+        )}
+      >
         {title}
       </h2>
       {description ? (
-        <p className="mt-5 text-[16.5px] md:text-[18px] leading-[1.7] text-ink-muted">
+        <p
+          className={cn(
+            "mt-5 text-[16.5px] md:text-[18px] leading-[1.7]",
+            onDark ? "text-paper/70" : "text-ink-muted",
+          )}
+        >
           {description}
         </p>
       ) : null}

@@ -1,3 +1,5 @@
+"use client";
+
 import { useCallback, useEffect, useRef, useState, type KeyboardEvent, type TouchEvent } from "react";
 import { useReducedMotion } from "framer-motion";
 import { heroCopy, heroSlides, heroTrustItems } from "@/lib/data/hero";
@@ -11,6 +13,7 @@ export function resolveHero(content?: CmsHero): CmsHero {
     ...heroCopy,
     trustItems: [...heroTrustItems],
     slides: heroSlides.map((slide) => ({ ...slide })),
+    template: "split",
   };
 }
 

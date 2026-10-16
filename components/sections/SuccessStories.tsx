@@ -39,7 +39,7 @@ export function SuccessStories() {
   }, [emblaApi]);
 
   return (
-    <Section id="success" labelledBy="success-heading">
+    <Section id="success" labelledBy="success-heading" className="bg-paper-warm">
       <Container>
         <div className="flex items-end justify-between gap-6">
           <RevealOnScroll>

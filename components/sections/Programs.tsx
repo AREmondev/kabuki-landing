@@ -11,7 +11,7 @@ export function Programs({ content }: { content?: CmsContent["programs"] }) {
   const programs = copy.items;
 
   return (
-    <Section id="programs" labelledBy="programs-heading">
+    <Section id="programs" labelledBy="programs-heading" className="bg-paper-warm">
       <Container>
         <RevealOnScroll>
           <SectionHeading

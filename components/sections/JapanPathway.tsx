@@ -7,7 +7,7 @@ import { RevealOnScroll } from "@/components/motion/RevealOnScroll";
 
 export function JapanPathway() {
   return (
-    <Section id="pathway" labelledBy="pathway-heading" className="bg-paper-warm">
+    <Section id="pathway" labelledBy="pathway-heading" className="bg-navy-deep text-paper">
       <Container>
         <RevealOnScroll>
           <SectionHeading
@@ -15,6 +15,7 @@ export function JapanPathway() {
             eyebrow={pathwayCopy.eyebrow}
             title={pathwayCopy.title}
             description={pathwayCopy.description}
+            onDark
           />
         </RevealOnScroll>
         <ol className="mt-12 md:mt-14 grid lg:grid-cols-8 gap-0">
@@ -24,6 +25,7 @@ export function JapanPathway() {
               number={step.number}
               title={step.title}
               isLast={index === pathwaySteps.length - 1}
+              onDark
             />
           ))}
         </ol>

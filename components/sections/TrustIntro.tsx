@@ -6,7 +6,7 @@ import { RevealOnScroll } from "@/components/motion/RevealOnScroll";
 
 export function TrustIntro() {
   return (
-    <Section labelledBy="trust-heading" className="!pb-0">
+    <Section labelledBy="trust-heading">
       <Container>
         <div className="grid gap-12 lg:grid-cols-12 lg:gap-20 items-start">
           <RevealOnScroll className="lg:col-span-7">

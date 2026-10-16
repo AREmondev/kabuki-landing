@@ -5,6 +5,7 @@ type TimelineStepProps = {
   title: string;
   isLast?: boolean;
   className?: string;
+  onDark?: boolean;
 };
 
 export function TimelineStep({
@@ -12,6 +13,7 @@ export function TimelineStep({
   title,
   isLast,
   className,
+  onDark = false,
 }: TimelineStepProps) {
   return (
     <li className={cn("relative flex lg:flex-col gap-4 lg:gap-5", className)}>
@@ -21,12 +23,20 @@ export function TimelineStep({
         </span>
         {!isLast ? (
           <span
-            className="mt-1 w-px flex-1 bg-line lg:mt-0 lg:ml-0 lg:h-px lg:w-full"
+            className={cn(
+              "mt-1 w-px flex-1 lg:mt-0 lg:ml-0 lg:h-px lg:w-full",
+              onDark ? "bg-white/25" : "bg-line",
+            )}
             aria-hidden
           />
         ) : null}
       </div>
-      <p className="pb-8 lg:pb-0 font-display text-[16px] text-navy leading-snug">
+      <p
+        className={cn(
+          "pb-8 lg:pb-0 font-display text-[16px] leading-snug",
+          onDark ? "text-paper" : "text-navy",
+        )}
+      >
         {title}
       </p>
     </li>

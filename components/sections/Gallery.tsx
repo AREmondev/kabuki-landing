@@ -84,7 +84,7 @@ export function Gallery({ content }: { content?: CmsContent["gallery"] }) {
   const active = openIndex === null ? null : galleryItems[openIndex];
 
   return (
-    <Section id="gallery" labelledBy="gallery-heading">
+    <Section id="gallery" labelledBy="gallery-heading" className="bg-paper-warm">
       <Container>
         <RevealOnScroll>
           <SectionHeading

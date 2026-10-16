@@ -66,7 +66,7 @@ export function Contact({ content }: { content?: CmsContent["contact"] }) {
     <section
       id="contact"
       aria-labelledby="contact-heading"
-      className="section-space scroll-mt-16 md:scroll-mt-[76px]"
+      className="section-space scroll-mt-16 md:scroll-mt-[76px] bg-paper-warm"
     >
       <Container>
         <div className="grid lg:grid-cols-12 overflow-hidden rounded-card border border-line">

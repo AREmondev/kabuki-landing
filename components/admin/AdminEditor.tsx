@@ -1,13 +1,21 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useId, useMemo, useRef, useState } from "react";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { Plus, Trash2 } from "lucide-react";
+import { ImageOff, LoaderCircle, Plus, Trash2, Upload } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { Textarea } from "@/components/ui/Textarea";
-import type { CmsContent, CmsGalleryItem } from "@/lib/cms/types";
+import type { CmsContent, CmsGalleryItem, HeroTemplate } from "@/lib/cms/types";
 import { cn } from "@/lib/utils";
+
+const heroTemplates: { id: HeroTemplate; label: string; hint: string }[] = [
+  { id: "split", label: "স্প্লিট", hint: "লেখা বামে, স্লাইডার ডানে" },
+  { id: "full", label: "ফুল স্ক্রিন", hint: "পুরো পর্দা ছবি, নিচে লেখা" },
+  { id: "center", label: "সেন্টার", hint: "ছবির ওপর মাঝারি লেখা" },
+  { id: "top", label: "টপ ব্যানার", hint: "মাঝারি শিরোনাম, নিচে চওড়া স্লাইডার" },
+];
 
 const tabs = [
   { id: "hero", label: "হিরো" },
@@ -162,25 +170,92 @@ function ImageField({
   onChange: (value: string) => void;
   onUpload: (file: File) => Promise<string>;
 }) {
+  const fieldId = useId();
+  const fileRef = useRef<HTMLInputElement>(null);
   const [busy, setBusy] = useState(false);
+  const [failed, setFailed] = useState(false);
+  const [fileName, setFileName] = useState("");
+
+  useEffect(() => {
+    setFailed(false);
+  }, [value]);
+
+  async function handleFile(file: File | undefined) {
+    if (!file) return;
+    setFileName(file.name);
+    setBusy(true);
+    try {
+      onChange(await onUpload(file));
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  const hasImage = Boolean(value) && !failed;
+
   return (
     <div className="space-y-2 md:col-span-2">
-      <Input label={label} name={label} value={value} onChange={(event) => onChange(event.target.value)} />
-      <input
-        type="file"
-        accept="image/*"
-        onChange={async (event) => {
-          const file = event.target.files?.[0];
-          if (!file) return;
-          setBusy(true);
-          try {
-            onChange(await onUpload(file));
-          } finally {
-            setBusy(false);
-          }
-        }}
-      />
-      {busy ? <p className="text-[13px] text-ink-muted">আপলোড হচ্ছে…</p> : null}
+      <p className="text-[13px] font-semibold text-navy">{label}</p>
+      <div className="flex flex-col gap-4 sm:flex-row">
+        <div className="relative aspect-[4/3] w-32 shrink-0 overflow-hidden rounded-card border border-line bg-paper-warm sm:w-44">
+          {hasImage ? (
+            <Image
+              key={value}
+              src={value}
+              alt=""
+              fill
+              sizes="176px"
+              unoptimized
+              className="object-cover"
+              onError={() => setFailed(true)}
+            />
+          ) : (
+            <div className="flex h-full w-full flex-col items-center justify-center gap-1.5 px-2 text-center text-ink-muted">
+              <ImageOff className="size-5" strokeWidth={1.5} />
+              <span className="text-[11.5px] leading-tight">
+                {failed ? "ছবি লোড হয়নি" : "কোনো ছবি নেই"}
+              </span>
+            </div>
+          )}
+          {busy ? (
+            <div className="absolute inset-0 flex items-center justify-center bg-navy/60">
+              <LoaderCircle className="size-5 animate-spinner text-white" strokeWidth={1.5} />
+            </div>
+          ) : null}
+        </div>
+
+        <div className="min-w-0 flex-1 space-y-3">
+          <Input
+            id={`${fieldId}-path`}
+            label="ছবির পাথ বা URL"
+            value={value}
+            onChange={(event) => onChange(event.target.value)}
+          />
+          <div className="flex flex-wrap items-center gap-3">
+            <Button
+              type="button"
+              variant="secondary"
+              loading={busy}
+              onClick={() => fileRef.current?.click()}
+            >
+              <Upload className="size-4" strokeWidth={1.5} /> ছবি আপলোড করুন
+            </Button>
+            <input
+              ref={fileRef}
+              type="file"
+              accept="image/*"
+              className="hidden"
+              onChange={async (event) => {
+                await handleFile(event.target.files?.[0]);
+                event.target.value = "";
+              }}
+            />
+            <span className="truncate text-[12px] text-ink-muted">
+              {fileName || "JPG, PNG বা WebP"}
+            </span>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
@@ -195,12 +270,87 @@ function HeroFields({
   onUpload: (file: File) => Promise<string>;
 }) {
   const hero = content.hero;
+  const [previewMobile, setPreviewMobile] = useState(false);
   function patch(partial: Partial<typeof hero>) {
     setContent((current) => ({ ...current, hero: { ...current.hero, ...partial } }));
   }
 
   return (
     <>
+      <Card title="হিরো টেমপ্লেট">
+        <div className="overflow-hidden rounded-button border border-line">
+          <div
+            className={cn(
+              "mx-auto transition-[max-width] duration-300 ease-editorial",
+              previewMobile ? "max-w-[390px]" : "max-w-full",
+            )}
+          >
+            <iframe
+              key={hero.template}
+              src={`/preview/${hero.template}`}
+              title="হিরো টেমপ্লেট প্রিভিউ"
+              className="block h-[440px] w-full border-0 bg-navy-deep"
+            />
+          </div>
+          <div className="flex flex-wrap items-center justify-between gap-3 border-t border-line px-4 py-3">
+            <p className="text-[13px] text-ink-muted">
+              {heroTemplates.find((item) => item.id === hero.template)?.hint}
+            </p>
+            <div className="flex gap-1 rounded-button border border-line p-1">
+              <button
+                type="button"
+                onClick={() => setPreviewMobile(false)}
+                aria-pressed={!previewMobile}
+                className={cn(
+                  "h-8 rounded-button px-3 text-[12.5px] font-semibold",
+                  !previewMobile ? "bg-navy text-white" : "text-navy hover:bg-navy/5",
+                )}
+              >
+                ডেস্কটপ
+              </button>
+              <button
+                type="button"
+                onClick={() => setPreviewMobile(true)}
+                aria-pressed={previewMobile}
+                className={cn(
+                  "h-8 rounded-button px-3 text-[12.5px] font-semibold",
+                  previewMobile ? "bg-navy text-white" : "text-navy hover:bg-navy/5",
+                )}
+              >
+                মোবাইল
+              </button>
+            </div>
+          </div>
+        </div>
+        <div className="mt-4 grid grid-cols-2 gap-2 md:grid-cols-4">
+          {heroTemplates.map((item) => (
+            <button
+              key={item.id}
+              type="button"
+              onClick={() => patch({ template: item.id })}
+              aria-pressed={hero.template === item.id}
+              className={cn(
+                "rounded-button border p-3 text-left transition-colors",
+                hero.template === item.id
+                  ? "border-kabuki bg-kabuki/10"
+                  : "border-line bg-white hover:border-navy/40",
+              )}
+            >
+              <span
+                className={cn(
+                  "block text-[13.5px] font-semibold",
+                  hero.template === item.id ? "text-kabuki" : "text-navy",
+                )}
+              >
+                {item.label}
+              </span>
+              <span className="mt-1 block text-[12px] leading-snug text-ink-muted">
+                {item.hint}
+              </span>
+            </button>
+          ))}
+        </div>
+      </Card>
       <Card title="হিরো লেখা">
         <FieldGrid>
           <Input label="কানজি লেবেল" name="kanji" value={hero.kanjiLabel} onChange={(e) => patch({ kanjiLabel: e.target.value })} />
