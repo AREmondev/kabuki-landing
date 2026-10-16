@@ -29,6 +29,12 @@ export async function PUT(request: Request) {
     return NextResponse.json({ ok: true });
   } catch (error) {
     console.error("CMS save failed:", error);
-    return NextResponse.json({ error: "সংরক্ষণ করা যায়নি।" }, { status: 500 });
+    return NextResponse.json(
+      {
+        error: "সংরক্ষণ করা যায়নি।",
+        detail: error instanceof Error ? error.message : "unknown error",
+      },
+      { status: 500 },
+    );
   }
 }

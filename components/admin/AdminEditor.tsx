@@ -49,7 +49,9 @@ export function AdminEditor({ initial }: { initial: CmsContent }) {
         body: JSON.stringify(content),
       });
       const body = await response.json().catch(() => ({}));
-      if (!response.ok) throw new Error(body.error || "সংরক্ষণ ব্যর্থ।");
+      if (!response.ok) {
+        throw new Error(body.detail ? `${body.error} — ${body.detail}` : body.error || "সংরক্ষণ ব্যর্থ।");
+      }
       setStatus("সংরক্ষণ হয়েছে। সাইটে এখনই দেখা যাবে।");
       router.refresh();
     } catch (err) {
@@ -70,7 +72,9 @@ export function AdminEditor({ initial }: { initial: CmsContent }) {
     form.append("file", file);
     const response = await fetch("/api/cms/upload", { method: "POST", body: form });
     const body = await response.json().catch(() => ({}));
-    if (!response.ok) throw new Error(body.error || "আপলোড ব্যর্থ।");
+    if (!response.ok) {
+      throw new Error(body.detail ? `${body.error} — ${body.detail}` : body.error || "আপলোড ব্যর্থ।");
+    }
     return body.url as string;
   }
 

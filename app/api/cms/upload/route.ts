@@ -36,6 +36,12 @@ export async function POST(request: Request) {
     return NextResponse.json({ url: `/uploads/${filename}` });
   } catch (error) {
     console.error("Upload failed:", error);
-    return NextResponse.json({ error: "আপলোড হয়নি।" }, { status: 500 });
+    return NextResponse.json(
+      {
+        error: "আপলোড হয়নি।",
+        detail: error instanceof Error ? error.message : "unknown error",
+      },
+      { status: 500 },
+    );
   }
 }

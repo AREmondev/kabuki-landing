@@ -52,6 +52,12 @@ export async function saveCmsContent(content: CmsContent) {
     return;
   }
 
+  if (process.env.VERCEL) {
+    throw new Error(
+      "No persistent storage: connect a Vercel Blob store to this project (adds BLOB_READ_WRITE_TOKEN), then redeploy.",
+    );
+  }
+
   await fs.mkdir(path.dirname(DATA_PATH), { recursive: true });
   await fs.writeFile(DATA_PATH, `${JSON.stringify(content, null, 2)}\n`, "utf8");
 }
