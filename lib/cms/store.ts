@@ -1,9 +1,11 @@
 import { promises as fs } from "fs";
 import path from "path";
+import { blobEnabled, readBlobJson, writeBlobJson } from "./blob";
 import { getDefaultCmsContent } from "./defaults";
 import type { CmsContent } from "./types";
 
 const DATA_PATH = path.join(process.cwd(), "data", "cms.json");
+const BLOB_PATH = "cms/content.json";
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return Boolean(value) && typeof value === "object" && !Array.isArray(value);
@@ -31,6 +33,11 @@ function mergeContent(raw: unknown): CmsContent {
 }
 
 export async function getCmsContent(): Promise<CmsContent> {
+  if (blobEnabled()) {
+    const fromBlob = await readBlobJson<unknown>(BLOB_PATH);
+    if (fromBlob) return mergeContent(fromBlob);
+  }
+
   try {
     const raw = await fs.readFile(DATA_PATH, "utf8");
     return mergeContent(JSON.parse(raw));
@@ -40,6 +47,11 @@ export async function getCmsContent(): Promise<CmsContent> {
 }
 
 export async function saveCmsContent(content: CmsContent) {
+  if (blobEnabled()) {
+    await writeBlobJson(BLOB_PATH, content);
+    return;
+  }
+
   await fs.mkdir(path.dirname(DATA_PATH), { recursive: true });
   await fs.writeFile(DATA_PATH, `${JSON.stringify(content, null, 2)}\n`, "utf8");
 }

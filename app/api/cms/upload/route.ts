@@ -2,6 +2,7 @@ import { promises as fs } from "fs";
 import path from "path";
 import { NextResponse } from "next/server";
 import { isAdminAuthenticated } from "@/lib/cms/auth";
+import { blobEnabled, putBlobFile } from "@/lib/cms/blob";
 
 const ALLOWED = new Set(["image/jpeg", "image/png", "image/webp", "image/gif"]);
 
@@ -23,11 +24,18 @@ export async function POST(request: Request) {
     const ext = file.name.split(".").pop()?.toLowerCase() ?? "jpg";
     const safeExt = ["jpg", "jpeg", "png", "webp", "gif"].includes(ext) ? ext : "jpg";
     const filename = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${safeExt}`;
+
+    if (blobEnabled()) {
+      const url = await putBlobFile(`uploads/${filename}`, file);
+      return NextResponse.json({ url });
+    }
+
     const dir = path.join(process.cwd(), "public", "uploads");
     await fs.mkdir(dir, { recursive: true });
     await fs.writeFile(path.join(dir, filename), Buffer.from(await file.arrayBuffer()));
     return NextResponse.json({ url: `/uploads/${filename}` });
-  } catch {
+  } catch (error) {
+    console.error("Upload failed:", error);
     return NextResponse.json({ error: "আপলোড হয়নি।" }, { status: 500 });
   }
 }

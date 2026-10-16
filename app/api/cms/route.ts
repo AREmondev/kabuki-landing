@@ -27,7 +27,8 @@ export async function PUT(request: Request) {
     }
     await saveCmsContent(parsed.data);
     return NextResponse.json({ ok: true });
-  } catch {
+  } catch (error) {
+    console.error("CMS save failed:", error);
     return NextResponse.json({ error: "সংরক্ষণ করা যায়নি।" }, { status: 500 });
   }
 }
