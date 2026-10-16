@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-label="KABUKI">
+  <rect width="1200" height="630" fill="#0B1F33"/>
+  <rect x="24" y="24" width="1152" height="582" fill="none" stroke="#1c334c" stroke-width="1"/>
+  <circle cx="216" cy="139" r="6" fill="#C91F2B"/>
+  <text x="48" y="290" fill="#FCFBF8" font-family="Georgia, serif" font-size="55">KABUKI</text>
+  <text x="48" y="326" fill="#b7c0c8" font-family="Inter, Helvetica, Arial, sans-serif" font-size="16">Japanese Language Academy · Bangladesh</text>
+  <text x="48" y="590" fill="#b7c0c8" font-family="Inter, Helvetica, Arial, sans-serif" font-size="12">Licensed photography pending · 1200×630</text>
+</svg>

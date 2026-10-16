@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="900" viewBox="0 0 1200 900" role="img" aria-label="Master's Programme">
+  <rect width="1200" height="900" fill="#F7F5F0"/>
+  <rect x="24" y="24" width="1152" height="852" fill="none" stroke="#E6E8EA" stroke-width="1"/>
+  <circle cx="216" cy="198" r="6" fill="#C91F2B"/>
+  <text x="48" y="414" fill="#0B1F33" font-family="Georgia, serif" font-size="55">Master's Programme</text>
+  <text x="48" y="450" fill="#4A5568" font-family="Inter, Helvetica, Arial, sans-serif" font-size="16">4:3 programme placeholder</text>
+  <text x="48" y="860" fill="#4A5568" font-family="Inter, Helvetica, Arial, sans-serif" font-size="12">Licensed photography pending · 1200×900</text>
+</svg>
